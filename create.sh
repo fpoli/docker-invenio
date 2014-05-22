@@ -33,7 +33,7 @@ fi
 
 msg "Checking Inspire"
 if [ ! -d "$INSPIRE_FOLDER" ]; then
-    git clone -b "$INSPIRE_BRANCH" "$inspire_repository" "$INSPIRE_FOLDER" || die "git clone Inspire failed"
+    git clone -b "$INSPIRE_BRANCH" "$INSPIRE_REPOSITORY" "$INSPIRE_FOLDER" || die "git clone Inspire failed"
 fi
 
 msg "Checking $INVENIO_LOCAL_FILE"
