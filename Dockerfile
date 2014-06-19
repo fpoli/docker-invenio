@@ -1,6 +1,7 @@
 FROM ubuntu:14.04
 MAINTAINER Federico Poli "federico.poli@cern.ch"
 
+
 ################
 # Requirements #
 ################
@@ -19,6 +20,7 @@ RUN pip install invenio-devserver nose plumbum
 # System
 RUN apt-get install -y git unzip wget
 
+
 ###############
 # Create user #
 ###############
@@ -28,13 +30,13 @@ RUN echo "docker ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 ENV HOME /home/docker
 USER docker
 
+
 ###################
-# Install Inspire #
+# Install Invenio #
 ###################
 
 # Preparing Invenio build folder
-ADD invenio /home/docker/invenio
-RUN sudo chown docker:docker /home/docker/invenio -R
+RUN git clone git@github.com:inveniosoftware/invenio.git /home/docker/invenio
 WORKDIR /home/docker/invenio
 
 # Installing Invenio requirements
@@ -57,22 +59,11 @@ RUN sudo ln -s /opt/invenio/lib/python/invenio /usr/local/lib/python2.7/dist-pac
 RUN make install
 RUN make install-jquery-plugins
 
-###########################
-# Install Inspire overlay #
-###########################
-
-# Preparing Invenio build folder
-ADD inspire /home/docker/inspire
-ADD inspire-config-local.mk /home/docker/inspire/config-local.mk
-WORKDIR /home/docker/inspire
-
-# Install Inspire
-RUN make
-RUN make install
-
 # Configuration
 ADD invenio-local.conf /opt/invenio/etc/invenio-local.conf
 RUN /opt/invenio/bin/inveniocfg --update-all
+RUN /opt/invenio/bin/inveniocfg --load-bibfield-conf
+
 
 ###################
 # Create Database #
@@ -89,18 +80,9 @@ RUN sudo /home/docker/services.sh start && \
         /opt/invenio/bin/inveniocfg --create-tables && \
 
         /opt/invenio/bin/inveniocfg --create-demo-site && \
-        make install-dbchanges && \
-        echo TRUNCATE schTASK | /opt/invenio/bin/dbexec && \
-        make load-demo-records && \
-        /opt/invenio/bin/bibupload 1 && \
-        /opt/invenio/bin/bibindex 2 && \
-        /opt/invenio/bin/webcoll 3 && \
-        /opt/invenio/bin/bibrank 4 && \
-        /opt/invenio/bin/bibauthorid --update-personid --all-records -u $CFG_INSPIRE_BIBTASK_USER && \
-        /opt/invenio/bin/bibauthorid 5 && \
+        /opt/invenio/bin/inveniocfg --load-demo-records && \
     sudo /home/docker/services.sh stop
 
-RUN /opt/invenio/bin/inveniocfg --load-bibfield-conf
 
 ###########
 # Startup #
