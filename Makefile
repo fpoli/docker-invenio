@@ -6,13 +6,13 @@ NAME=fpoli/invenio
 all: build
 
 build:
-    ${DOCKER} build -t ${NAME} .
+	${DOCKER} build -t ${NAME} .
 
 init: clean data-dir
-    ${DOCKER} run ${VOLUME_OPTIONS} ${NAME}:latest init
+	${DOCKER} run ${VOLUME_OPTIONS} ${NAME}:latest init
 
 start:
-    sudo docker run ${PORT_OPTIONS} ${VOLUME_OPTIONS} ${NAME}:latest
+	sudo docker run ${PORT_OPTIONS} ${VOLUME_OPTIONS} ${NAME}:latest
 
 bash:
-    sudo docker run ${VOLUME_OPTIONS} -t -i ${NAME}:latest /bin/bash
+	sudo docker run ${VOLUME_OPTIONS} -t -i ${NAME}:latest /bin/bash
