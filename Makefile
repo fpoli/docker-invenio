@@ -1,18 +1,22 @@
-DOCKER=docker
-VOLUME_OPTIONS=
-PORT_OPTIONS=-p 4000:4000
-NAME=fpoli/invenio
+VOLUME_OPTIONS =
+PORT_OPTIONS = -p 4000:4000
+NAME = fpoli/invenio
+VERSION = 0.0.1
+
+.PHONY: all build test tag_latest release start bash
 
 all: build
 
 build:
-	${DOCKER} build -t ${NAME} .
+	docker build -t $(NAME) .
 
-init: clean data-dir
-	${DOCKER} run ${VOLUME_OPTIONS} ${NAME}:latest init
+test:
+	docker run $(VOLUME_OPTIONS) -t -i $(NAME):latest "\
+		/opt/invenio/bin/inveniocfg --run-unit-tests && \
+		/opt/invenio/bin/inveniocfg --run-regression-tests --yes-i-know "
 
 start:
-	sudo docker run ${PORT_OPTIONS} ${VOLUME_OPTIONS} ${NAME}:latest
+	docker run $(PORT_OPTIONS) $(VOLUME_OPTIONS) $(NAME):latest
 
 bash:
-	sudo docker run ${VOLUME_OPTIONS} -t -i ${NAME}:latest /bin/bash
+	docker run $(VOLUME_OPTIONS) -t -i $(NAME):latest /bin/bash
