@@ -88,10 +88,9 @@ RUN sudo /home/docker/services.sh start && \
 # Startup #
 ###########
 
-ADD startup.sh /home/docker/startup.sh
-RUN sudo chmod +x /home/docker/startup.sh
+ADD run /home/docker/run
+RUN sudo chmod +x /home/docker/run
 
 WORKDIR /home/docker
 EXPOSE 4000
-ENTRYPOINT ["/home/docker/startup.sh"]
-CMD ["serve", "-b", "0.0.0.0"]
+CMD ["/home/docker/run"]

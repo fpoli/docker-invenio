@@ -1,6 +1,5 @@
 #!/bin/bash
 
-COMMAND="$@"
 SERVER_PID=""
 
 function quit() {
@@ -14,15 +13,9 @@ function quit() {
 	exit
 }
 
-if [ -z "$COMMAND" ]
-then
-	echo "/!\\ No command provided"
-	exit
-fi
-
 sudo /home/docker/services.sh start
 
-echo "[*] Executing '$COMMAND'"
+echo "[*] Executing 'serve -b 0.0.0.0'"
 serve -b 0.0.0.0 &
 SERVER_PID=$!
 
