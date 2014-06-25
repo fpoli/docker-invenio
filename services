@@ -1,15 +1,17 @@
 #!/bin/bash
 
 start_services() {
-	echo "[*] Starting the databases"
+	echo "[*] Starting the services"
 	service mysql start
 	service redis-server start
-	sleep 3
+	service apache start
+    sleep 3
 }
 
 stop_services() {
-	echo "[*] Gracefully stopping the databases"
-	service redis-server stop
+	echo "[*] Gracefully stopping the services"
+	service apache stop
+    service redis-server stop
 	service mysql stop
 }
 
