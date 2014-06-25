@@ -1,9 +1,9 @@
 VOLUME_OPTIONS =
 PORT_OPTIONS = -p 4000:4000
-NAME = fpoli/invenio
+NAME = fedux/invenio
 VERSION = 0.0.1
 
-.PHONY: all build test tag_latest release start bash
+.PHONY: all build test start bash
 
 all: build
 
@@ -16,7 +16,7 @@ test:
 		/opt/invenio/bin/inveniocfg --run-regression-tests --yes-i-know "
 
 start:
-	docker run $(PORT_OPTIONS) $(VOLUME_OPTIONS) $(NAME):latest
+	docker run $(PORT_OPTIONS) -t -i $(VOLUME_OPTIONS) $(NAME):latest
 
 bash:
 	docker run $(VOLUME_OPTIONS) -t -i $(NAME):latest /bin/bash
