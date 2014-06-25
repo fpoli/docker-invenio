@@ -15,10 +15,11 @@ RUN apt-get install -y mariadb-server libmariadbclient-dev
 RUN apt-get install -y \
     python-pip redis-server python-dev libssl-dev libxml2-dev libxslt-dev \
     gnuplot clisp automake pstotext gettext
-RUN pip install invenio-devserver nose plumbum
+RUN apt-get install -y git
+RUN pip install git+https://bitbucket.org/osso/invenio-devserver.git
 
 # System
-RUN apt-get install -y git unzip wget
+RUN apt-get install -y unzip wget
 
 
 ###############
@@ -69,19 +70,19 @@ RUN /opt/invenio/bin/inveniocfg --load-bibfield-conf
 # Create Database #
 ###################
 
-ADD services.sh /home/docker/services.sh
-RUN sudo chmod +x /home/docker/services.sh
+ADD services /home/docker/services
+RUN sudo chmod +x /home/docker/services
 
 ENV CFG_INSPIRE_BIBTASK_USER admin
 
-RUN sudo /home/docker/services.sh start && \
+RUN sudo /home/docker/services start && \
         mysql -u root -e "CREATE DATABASE IF NOT EXISTS invenio DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci" && \
         mysql -u root -e "GRANT ALL PRIVILEGES ON invenio.* TO invenio@localhost IDENTIFIED BY 'my123p\$ss'" && \
         /opt/invenio/bin/inveniocfg --create-tables && \
 
         /opt/invenio/bin/inveniocfg --create-demo-site && \
         /opt/invenio/bin/inveniocfg --load-demo-records && \
-    sudo /home/docker/services.sh stop
+    sudo /home/docker/services stop
 
 
 ###########
@@ -93,4 +94,5 @@ RUN sudo chmod +x /home/docker/run
 
 WORKDIR /home/docker
 EXPOSE 4000
-CMD ["/home/docker/run"]
+ENTRYPOINT ["/home/docker/run"]
+CMD ["serve", "-b", "0.0.0.0"]
