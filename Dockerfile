@@ -47,7 +47,7 @@ RUN sudo pip install -r requirements.txt
 RUN aclocal
 RUN automake -a
 RUN autoconf
-RUN ./configure 
+RUN ./configure
 RUN make
 
 # Preparing Invenio destination folders
@@ -58,6 +58,19 @@ RUN sudo ln -s /opt/invenio/lib/python/invenio /usr/local/lib/python2.7/dist-pac
 # Installing Invenio and plugins
 RUN make install
 RUN make install-jquery-plugins
+
+###########################
+# Install Inspire overlay #
+###########################
+
+# Preparing Invenio build folder
+RUN git clone https://github.com/inspirehep/inspire.git /home/docker/inspire
+ADD config-local.mk /home/docker/inspire/config-local.mk
+WORKDIR /home/docker/inspire
+
+# Install Inspire
+RUN make
+RUN make install
 
 # Configuration
 ADD invenio-local.conf /opt/invenio/etc/invenio-local.conf
@@ -80,7 +93,15 @@ RUN sudo /home/docker/services.sh start && \
         /opt/invenio/bin/inveniocfg --create-tables && \
 
         /opt/invenio/bin/inveniocfg --create-demo-site && \
-        /opt/invenio/bin/inveniocfg --load-demo-records && \
+        make install-dbchanges && \
+        echo TRUNCATE schTASK | /opt/invenio/bin/dbexec && \
+        make load-demo-records && \
+        /opt/invenio/bin/bibupload 1 && \
+        /opt/invenio/bin/bibindex 2 && \
+        /opt/invenio/bin/webcoll 3 && \
+        /opt/invenio/bin/bibrank 4 && \
+        /opt/invenio/bin/bibauthorid --update-personid --all-records -u $CFG_INSPIRE_BIBTASK_USER && \
+        /opt/invenio/bin/bibauthorid 5 && \
     sudo /home/docker/services.sh stop
 
 
