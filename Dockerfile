@@ -88,8 +88,8 @@ RUN sudo chmod +x /home/docker/services.sh
 ENV CFG_INSPIRE_BIBTASK_USER admin
 
 RUN sudo /home/docker/services.sh start && \
-        mysql -u root -e "CREATE DATABASE IF NOT EXISTS invenio DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci" && \
-        mysql -u root -e "GRANT ALL PRIVILEGES ON invenio.* TO invenio@localhost IDENTIFIED BY 'my123p\$ss'" && \
+        mysql -u root -e "CREATE DATABASE IF NOT EXISTS inspire DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci" && \
+        mysql -u root -e "GRANT ALL PRIVILEGES ON inspire.* TO inspire@localhost IDENTIFIED BY 'my123p\$ss'" && \
         /opt/invenio/bin/inveniocfg --create-tables && \
 
         /opt/invenio/bin/inveniocfg --create-demo-site && \
