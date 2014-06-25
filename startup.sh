@@ -1,15 +1,32 @@
 #!/bin/bash
 
 COMMAND="$@"
+SERVER_PID=""
+
+function quit() {
+	if [ -n "$SERVER_PID" ]
+	then
+		kill -s SIGINT $SERVER_PID
+	else
+		echo "/!\\ No server running"
+	fi
+	sudo /home/docker/services.sh stop
+	exit
+}
+
+if [ -z "$COMMAND" ]
+then
+	echo "/!\\ No command provided"
+	exit
+fi
 
 sudo /home/docker/services.sh start
 
-if [ -n "$COMMAND" ]
-then
-	echo "[*] Executing '$COMMAND'"
-	$COMMAND
-else
-	echo "/1\\ No command provided"
-fi
+echo "[*] Executing '$COMMAND'"
+serve -b 0.0.0.0 &
+SERVER_PID=$!
 
-sudo /home/docker/services.sh stop
+trap "echo -e '\r[*] Received SIGINT, exiting...'; quit" SIGINT
+trap "echo -e '\r[*] Received SIGQUIT, exiting...'; quit" SIGQUIT
+
+wait $SERVER_PID

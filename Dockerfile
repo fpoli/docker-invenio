@@ -92,6 +92,6 @@ ADD startup.sh /home/docker/startup.sh
 RUN sudo chmod +x /home/docker/startup.sh
 
 WORKDIR /home/docker
-EXPOSE :4000
+EXPOSE 4000
 ENTRYPOINT ["/home/docker/startup.sh"]
 CMD ["serve", "-b", "0.0.0.0"]
