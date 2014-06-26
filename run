@@ -4,7 +4,7 @@ COMMAND="$@"
 
 if [ -n "$COMMAND" ]
 then
-	sudo /home/docker/services start
+	sudo services start
 	echo "[*] Executing '$COMMAND'"
 	# Use exec to pass signals to $COMMAND
 	exec $COMMAND

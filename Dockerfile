@@ -29,8 +29,12 @@ RUN /home/docker/invenio-devscripts/invenio-kickstart --yes-i-know --yes-i-reall
 # Startup #
 ###########
 
+ADD services /usr/local/bin/services
+RUN sudo chmod +x /usr/local/bin/services
+
 ADD run /usr/local/bin/run
+RUN sudo chmod +x /usr/local/bin/run
 
 EXPOSE 80
-ENTRYPOINT ["/usr/local/bin/run"]
-CMD ["wait"]
+ENTRYPOINT ["run"]
+CMD ["sleep", "999999d"]

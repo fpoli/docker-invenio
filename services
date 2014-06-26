@@ -4,13 +4,13 @@ start_services() {
 	echo "[*] Starting the services"
 	service mysql start
 	service redis-server start
-	service apache start
+	service apache2 start
     sleep 3
 }
 
 stop_services() {
 	echo "[*] Gracefully stopping the services"
-	service apache stop
+	service apache2 stop
     service redis-server stop
 	service mysql stop
 }
