@@ -37,7 +37,7 @@ USER docker
 ###################
 
 # Preparing Invenio build folder
-RUN git clone https://github.com/inveniosoftware/invenio.git /home/docker/invenio
+RUN git clone -b new-prod https://github.com/inspirehep/ops.git /home/docker/invenio
 WORKDIR /home/docker/invenio
 
 # Installing Invenio requirements
