@@ -1,4 +1,4 @@
-inspire-docker
+docker-invenio
 ==============
 
 1. Edit `invenio-local.conf`, changing server name and admin email
