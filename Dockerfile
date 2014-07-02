@@ -59,19 +59,22 @@ RUN sudo ln -s /opt/invenio/lib/python/invenio /usr/local/lib/python2.7/dist-pac
 # Installing Invenio and plugins
 RUN make install
 RUN make install-jquery-plugins
+RUN make install-mathjax-plugin
+#RUN make install-jsmath-plugin
+#RUN make install-fckeditor-plugin
 
-# Configuration
+#################
+# Configuration #
+#################
+
 ADD invenio-local.conf /opt/invenio/etc/invenio-local.conf
 RUN /opt/invenio/bin/inveniocfg --update-all
 RUN /opt/invenio/bin/inveniocfg --load-bibfield-conf
 
 
-###################
-# Create Database #
-###################
-
-ADD services /home/docker/services
-RUN sudo chmod +x /home/docker/services
+####################
+# Create Demo Site #
+####################
 
 ENV CFG_INSPIRE_BIBTASK_USER admin
 
