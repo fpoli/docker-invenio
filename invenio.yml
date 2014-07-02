@@ -1,0 +1,26 @@
+---
+- hosts: localhost
+
+  connection: local
+
+  vars:
+    base_image: fpoli/invenio-base
+    base_image: fpoli/invenio-ready
+
+  tasks:
+
+  - name: Build base image
+    command: "docker build -t {{base_image}} ."
+
+  - name: Run base container
+    command: "docker run -d {{base_image}}:latest /usr/bin/sshd -D --name=invenio-base-running"
+
+  - name: Add container to hosts
+    command: "docker inspect --format '{{.NetworkSettings.IPAddress}}' invenio-base-running"
+    register: ip_from_container
+
+  - name: Add container to hosts
+    add_host: "name={{ ip_from_container }} group=containers"
+
+  - name: Log
+    debug: "{{ ip_from_container }}"
