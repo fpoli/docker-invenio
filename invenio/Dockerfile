@@ -6,10 +6,12 @@ MAINTAINER Federico Poli "federico.poli@cern.ch"
 # Requirements #
 ################
 
+ENV DEBIAN_FRONTEND noninteractive
+
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y \
     python-pip python-dev libssl-dev libxml2-dev libxslt-dev gnuplot clisp \
-    automake pstotext gettext git unzip wget
+    mysql-client libmysqlclient-dev automake pstotext gettext git unzip wget
 RUN pip install git+https://bitbucket.org/osso/invenio-devserver.git
 
 
@@ -22,17 +24,19 @@ USER docker
 ENV HOME /home/docker
 
 
-###########
-# Invenio #
-###########
+################
+# Installation #
+################
 
 # Preparing Invenio build folder
 RUN git clone -b new-prod https://github.com/inspirehep/ops.git /home/docker/invenio
 WORKDIR /home/docker/invenio
 
 # Installing Invenio requirements
+USER root
 RUN pip install -r requirements.txt
 #RUN pip install -r requirements-extras.txt
+USER docker
 
 # Building Invenio
 RUN aclocal
@@ -55,6 +59,18 @@ RUN make install-mathjax-plugin
 #RUN make install-jsmath-plugin
 #RUN make install-fckeditor-plugin
 
+
+###########
+# Scripts #
+###########
+
+USER root
+ADD invenio-local.conf invenio-local.conf
+ADD configure.sh configure.sh
+ADD install-demo.sh install-demo.sh
+RUN chown docker:docker invenio-local.conf configure.sh install-demo.sh
+RUN chmod +x configure.sh install-demo.sh
+USER docker
 
 ###########
 # Startup #
