@@ -8,19 +8,21 @@ MYSQL_ROOT_PASSWORD="$RANDOM"
 
 case "$1" in
 	build)
-		docker build -t $INVENIO_IMAGE invenio
+		docker build -t $INVENIO_IMAGE base
 		docker pull $MYSQL_IMAGE
 		docker pull $REDIS_IMAGE
 		;;
 
 	configure)
-		MYSQL_CONTAINER=$(docker run -d -e MYSQL_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD" $MYSQL_IMAGE)
-		REDIS_CONTAINER=$(docker run -d $REDIS_IMAGE)
-		INVENIO_CONTAINER=$(docker run \
+		MYSQL_CONTAINER=$( docker run -d -e MYSQL_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD" $MYSQL_IMAGE )
+		REDIS_CONTAINER=$( docker run -d $REDIS_IMAGE )
+		INVENIO_CONTAINER=$( docker run \
 			--link $MYSQL_CONTAINER:mysql \
 			--link $REDIS_CONTAINER:redis \
+			--volume configure:/home/docker/configure \
 			$INVENIO_IMAGE \
-			./configure.sh)
+			"cd configure && ./configure.sh"
+		)
 
 		exit 1
 
@@ -35,13 +37,14 @@ case "$1" in
 		;;
 
 	install-demo)
-		MYSQL_CONTAINER=$(docker run -d -e MYSQL_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD" $MYSQL_IMAGE)
-		REDIS_CONTAINER=$(docker run -d $REDIS_IMAGE)
+		MYSQL_CONTAINER=$( docker run -d -e MYSQL_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD" $MYSQL_IMAGE )
+		REDIS_CONTAINER=$( docker run -d $REDIS_IMAGE )
 		INVENIO_CONTAINER=$(docker run \
 			--link $MYSQL_CONTAINER:mysql \
 			--link $REDIS_CONTAINER:redis \
 			$INVENIO_IMAGE \
-			./install-demo.sh)
+			./install-demo.sh
+		)
 
 		docker stop $MYSQL_CONTAINER $REDIS_CONTAINER
 		
