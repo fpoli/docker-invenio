@@ -60,6 +60,18 @@ RUN make install-mathjax-plugin
 #RUN make install-fckeditor-plugin
 
 
+#############
+# Configure #
+#############
+
+USER root
+ADD invenio-local.conf /opt/invenio/etc/invenio-local.conf
+RUN chown docker:docker /opt/invenio/etc/invenio-local.conf
+USER docker
+RUN /opt/invenio/bin/inveniocfg --update-all
+RUN /opt/invenio/bin/inveniocfg --load-bibfield-conf
+
+
 ###########
 # Scripts #
 ###########
@@ -67,10 +79,9 @@ RUN make install-mathjax-plugin
 WORKDIR /home/docker
 
 USER root
-ADD invenio-local.conf /home/docker/invenio-local.conf
 ADD configure.sh /home/docker/configure.sh
 ADD install-demo.sh /home/docker/install-demo.sh
-RUN chown docker:docker invenio-local.conf configure.sh install-demo.sh
+RUN chown docker:docker configure.sh install-demo.sh
 RUN chmod +x configure.sh install-demo.sh
 USER docker
 
