@@ -64,10 +64,12 @@ RUN make install-mathjax-plugin
 # Scripts #
 ###########
 
+WORKDIR /home/docker
+
 USER root
-ADD invenio-local.conf invenio-local.conf
-ADD configure.sh configure.sh
-ADD install-demo.sh install-demo.sh
+ADD invenio-local.conf /home/docker/invenio-local.conf
+ADD configure.sh /home/docker/configure.sh
+ADD install-demo.sh /home/docker/install-demo.sh
 RUN chown docker:docker invenio-local.conf configure.sh install-demo.sh
 RUN chmod +x configure.sh install-demo.sh
 USER docker

@@ -10,3 +10,10 @@ Inspire Docker - Master branch
 Testing:
 * Run unit tests `./make.sh unit-tests`
 * Run regression tests `./make.sh regression-tests`
+
+
+References
+----------
+
+- [Invenio software](https://github.com/inveniosoftware/invenio)
+- [Invenio Docker](https://github.com/greut/invenio-docker) for next/pu branches

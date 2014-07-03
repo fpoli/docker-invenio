@@ -13,7 +13,7 @@ case "$1" in
 		;;
 
 	unit-tests)
-		docker run --rm $INVENIO_IMAGE:latest /opt/invenio/bin/inveniocfg --run-unit-tests
+		docker run --rm $INVENIO_IMAGE /opt/invenio/bin/inveniocfg --run-unit-tests
 		;;
 
 	configure)
