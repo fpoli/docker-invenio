@@ -11,7 +11,8 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y \
     python-pip python-dev libssl-dev libxml2-dev libxslt-dev gnuplot clisp \
-    mysql-client libmysqlclient-dev automake pstotext gettext git unzip wget
+    mysql-client libmysqlclient-dev automake pstotext gettext postfix \
+    git unzip wget
 RUN pip install git+https://bitbucket.org/osso/invenio-devserver.git
 
 
@@ -56,6 +57,7 @@ USER docker
 RUN make install
 RUN make install-jquery-plugins
 RUN make install-mathjax-plugin
+#make install-ckeditor-plugin
 #RUN make install-jsmath-plugin
 #RUN make install-fckeditor-plugin
 
