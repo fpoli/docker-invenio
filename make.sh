@@ -10,7 +10,7 @@ INVENIO_IMAGE="fedux/invenio-web"
 MYSQL_IMAGE="fedux/invenio-mysql"
 REDIS_IMAGE="fedux/invenio-redis"
 
-SUFFIX="$RANDOM"
+SUFFIX="$RANDOM$RANDOM"
 
 INVENIO_CONTAINER="invenio-web-$SUFFIX"
 MYSQL_CONTAINER="invenio-mysql-$SUFFIX"
@@ -41,8 +41,6 @@ case "$1" in
 			$INVENIO_BASE_IMAGE \
 			./configure/configure.sh
 
-		exit 1
-
 		docker stop $MYSQL_CONTAINER $REDIS_CONTAINER
 
 		docker commit $INVENIO_CONTAINER $INVENIO_IMAGE
@@ -51,7 +49,16 @@ case "$1" in
 		;;
 
 	unit-tests)
-		docker run --rm $INVENIO_IMAGE /opt/invenio/bin/inveniocfg --run-unit-tests
+		docker run -d \
+			--name $MYSQL_CONTAINER \
+			$MYSQL_IMAGE
+		docker run --rm \
+			--link $MYSQL_CONTAINER:mysql \
+			--volume $BASE_PATH/unit-tests:/home/docker/unit-tests \
+			$INVENIO_IMAGE \
+			./unit-tests/unit-tests.sh
+		
+		docker stop $MYSQL_CONTAINER
 		;;
 
 	install-demo)
