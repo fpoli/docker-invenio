@@ -1,11 +1,11 @@
 Inspire Docker - Master branch
 ==============================
 
-1. Edit `invenio/invenio-local.conf`, changing server name and emails
-2. Build with `./make.sh build`
+1. Build with `./make.sh build`
+2. Edit `configure/invenio-local.conf`, changing server name and emails
 3. Configure with `./make.sh configure`
-3. Install demo site with `./make.sh install-demo`
-4. Run with `./make.sh start`
+4. Install demo site with `./make.sh install-demo`
+5. Run with `./make.sh start`
 
 Testing:
 * Run unit tests `./make.sh unit-tests`
