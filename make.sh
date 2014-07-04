@@ -10,7 +10,7 @@ INVENIO_IMAGE="fedux/invenio-web"
 MYSQL_IMAGE="fedux/invenio-mysql"
 REDIS_IMAGE="fedux/invenio-redis"
 
-SUFFIX="$RANDOM$RANDOM"
+SUFFIX="$RANDOM"
 
 INVENIO_CONTAINER="invenio-web-$SUFFIX"
 MYSQL_CONTAINER="invenio-mysql-$SUFFIX"
@@ -62,42 +62,55 @@ case "$1" in
 		;;
 
 	install-demo)
-		MYSQL_CONTAINER=$( docker run -d -e MYSQL_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD" $MYSQL_IMAGE )
-		REDIS_CONTAINER=$( docker run -d $REDIS_IMAGE )
-		INVENIO_CONTAINER=$(docker run \
+		docker run -d \
+			--name $MYSQL_CONTAINER \
+			$MYSQL_IMAGE
+		docker run -d \
+			--name $REDIS_CONTAINER \
+			$REDIS_IMAGE
+		docker run \
 			--link $MYSQL_CONTAINER:mysql \
 			--link $REDIS_CONTAINER:redis \
+			--volume $BASE_PATH/demo:/home/docker/demo \
 			$INVENIO_IMAGE \
-			./install-demo.sh
-		)
+			./demo/install-demo.sh
 
 		docker stop $MYSQL_CONTAINER $REDIS_CONTAINER
 		
+		docker commit $INVENIO_CONTAINER $INVENIO_IMAGE
 		docker commit $MYSQL_CONTAINER $MYSQL_IMAGE
 		docker commit $REDIS_CONTAINER $REDIS_IMAGE
 		;;
 
 	regression-tests)
-		MYSQL_CONTAINER=$(docker run -d -e MYSQL_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD" $MYSQL_IMAGE)
-		REDIS_CONTAINER=$(docker run -d $REDIS_IMAGE)
-		INVENIO_CONTAINER=$(docker run \
+		docker run -d \
+			--name $MYSQL_CONTAINER \
+			$MYSQL_IMAGE
+		docker run -d \
+			--name $REDIS_CONTAINER \
+			$REDIS_IMAGE
+		docker run \
 			--link $MYSQL_CONTAINER:mysql \
 			--link $REDIS_CONTAINER:redis \
+			--volume $BASE_PATH/regression-tests:/home/docker/regression-tests \
 			$INVENIO_IMAGE \
-			/bin/bash -c "serve -b 0.0.0.0 &; /opt/invenio/bin/inveniocfg --run-regression-tests")
+			./regression-tests/regression-tests.sh
 
 		docker stop $MYSQL_CONTAINER $REDIS_CONTAINER
 		;;
 
 	start)
-		MYSQL_CONTAINER=$(docker run -d -e MYSQL_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD" $MYSQL_IMAGE)
-		REDIS_CONTAINER=$(docker run -d $REDIS_IMAGE)
-		INVENIO_CONTAINER=$(
-			docker run -d \
+		docker run -d \
+			--name $MYSQL_CONTAINER \
+			$MYSQL_IMAGE
+		docker run -d \
+			--name $REDIS_CONTAINER \
+			$REDIS_IMAGE
+		docker run -d \
 			--link $MYSQL_CONTAINER:mysql \
 			--link $REDIS_CONTAINER:redis \
 			$INVENIO_IMAGE
-		)
+
 		echo Mysql container: $MYSQL_CONTAINER
 		echo Redis container: $REDIS_CONTAINER
 		echo Invenio container: $INVENIO_CONTAINER
@@ -106,7 +119,9 @@ case "$1" in
 		;;
 
 	clear)
-		docker rmi $INVENIO_IMAGE $MYSQL_IMAGE $REDIS_IMAGE
+		docker rmi \
+			$INVENIO_BASE_IMAGE $MYSQL_BASE_IMAGE $REDIS_BASE_IMAGE \
+			$INVENIO_IMAGE $MYSQL_IMAGE $REDIS_IMAGE
 		;;
 
 	*)
