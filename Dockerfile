@@ -73,6 +73,8 @@ ADD invenio-local.conf /opt/invenio/etc/invenio-local.conf
 RUN /opt/invenio/bin/inveniocfg --update-all
 RUN /opt/invenio/bin/inveniocfg --load-bibfield-conf
 
+ADD services /home/docker/services
+RUN sudo chmod +x /home/docker/services
 
 ####################
 # Create Demo Site #
