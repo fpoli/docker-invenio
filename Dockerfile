@@ -20,6 +20,7 @@ RUN pip install git+https://bitbucket.org/osso/invenio-devserver.git
 
 # System
 RUN apt-get install -y unzip wget
+RUN apt-get install -y postfix
 
 
 ###############
@@ -62,6 +63,7 @@ RUN make install-jquery-plugins
 RUN make install-mathjax-plugin
 #RUN make install-jsmath-plugin
 #RUN make install-fckeditor-plugin
+
 
 #################
 # Configuration #
