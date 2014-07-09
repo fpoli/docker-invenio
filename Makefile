@@ -12,8 +12,8 @@ build:
 	docker build -t $(DEMO_IMAGE) demo
 
 test:
-	docker run -t -i $(DEMO_IMAGE):latest "\
-		/home/docker/services start && \
+	docker run -t -i $(DEMO_IMAGE):latest /bin/sh -c "\
+		sudo /home/docker/services start && \
 		/opt/invenio/bin/inveniocfg --run-unit-tests && \
 		/opt/invenio/bin/inveniocfg --run-regression-tests --yes-i-know "
 
