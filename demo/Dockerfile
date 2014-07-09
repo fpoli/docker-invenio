@@ -1,4 +1,4 @@
-FROM fedux/invenio-base
+FROM fedux/invenio-newprod-base
 MAINTAINER Federico Poli "federico.poli@cern.ch"
 
 
