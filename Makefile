@@ -1,4 +1,3 @@
-VOLUME_OPTIONS =
 PORT_OPTIONS = -p 4000:4000
 BASE_IMAGE = fedux/invenio-newprod-base
 DEMO_IMAGE = fedux/invenio-newprod-demo
@@ -14,11 +13,16 @@ build:
 
 test:
 	docker run -t -i $(DEMO_IMAGE):latest "\
+		/home/docker/services start && \
 		/opt/invenio/bin/inveniocfg --run-unit-tests && \
 		/opt/invenio/bin/inveniocfg --run-regression-tests --yes-i-know "
 
+push:
+	docker push $(BASE_IMAGE):latest
+	docker push $(DEMO_IMAGE):latest
+
 start-demo:
-	docker run $(PORT_OPTIONS) -t -i $(VOLUME_OPTIONS) $(DEMO_IMAGE):latest
+	docker run $(PORT_OPTIONS) -t -i $(DEMO_IMAGE):latest
 
 bash-demo:
-	docker run $(VOLUME_OPTIONS) -t -i $(DEMO_IMAGE):latest /bin/bash
+	docker run -t -i $(DEMO_IMAGE):latest /bin/bash
