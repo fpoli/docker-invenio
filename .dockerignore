@@ -1,0 +1,5 @@
+invenio/.git
+invenio/*.pyc
+invenio/*/*.pyc
+invenio/*/*/*.pyc
+invenio/*/*/*/*.pyc

@@ -1,0 +1,3 @@
+[submodule "base/invenio"]
+	path = base/invenio
+	url = https://github.com/inspirehep/invenio.git
