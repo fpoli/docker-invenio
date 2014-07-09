@@ -8,19 +8,13 @@ MAINTAINER Federico Poli "federico.poli@cern.ch"
 
 RUN apt-get update
 
-# Database
-RUN apt-get install -y mariadb-server libmariadbclient-dev
-
-# Webserver
-RUN apt-get install -y \
-    python-pip redis-server python-dev libssl-dev libxml2-dev libxslt-dev \
-    gnuplot clisp automake pstotext gettext
-RUN apt-get install -y git
-RUN pip install git+https://bitbucket.org/osso/invenio-devserver.git
-
-# System
-RUN apt-get install -y unzip wget
+RUN apt-get install -y python-pip
+RUN apt-get install -y mariadb-server libmariadbclient-dev redis-server 
+RUN apt-get install -y libssl-dev libxml2-dev libxslt-dev
+RUN apt-get install -y gnuplot clisp automake pstotext gettext
 RUN apt-get install -y postfix
+RUN apt-get install -y git unzip wget
+RUN pip install nose git+https://bitbucket.org/osso/invenio-devserver.git
 
 
 ###############
