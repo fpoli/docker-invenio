@@ -8,8 +8,8 @@ VERSION = 0.0.1
 all: build
 
 build:
-	docker build -t $(BASE_IMAGE) base
-	docker build -t $(DEMO_IMAGE) demo
+	docker build --no-cache=true -t $(BASE_IMAGE) base
+	docker build --no-cache=true -t $(DEMO_IMAGE) demo
 
 test:
 	docker run -t -i $(DEMO_IMAGE):latest /bin/sh -c "\

@@ -8,7 +8,7 @@ MAINTAINER Federico Poli "federico.poli@cern.ch"
 
 RUN apt-get update
 
-RUN apt-get install -y python-pip
+RUN apt-get install -y python-dev python-pip
 RUN apt-get install -y mariadb-server libmariadbclient-dev redis-server 
 RUN apt-get install -y libssl-dev libxml2-dev libxslt-dev
 RUN apt-get install -y gnuplot clisp automake pstotext gettext
